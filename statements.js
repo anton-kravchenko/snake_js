@@ -1,5 +1,10 @@
-var CANVAS_WIDTH =  1200;
-var CANVAS_HEIGHT = 700;
+var w = window,
+    d = document,
+    e = d.documentElement,
+    g = d.getElementsByTagName('body')[0],
+
+CANVAS_WIDTH  = w.innerWidth  - 5;
+CANVAS_HEIGHT = w.innerHeight - 5;
 
 var GRID_SIZE_X = 25;
 var GRID_SIZE_Y = 25;

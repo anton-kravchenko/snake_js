@@ -1,10 +1,13 @@
 function Snake()
 {
 	dir = RIGHT;
-	head = new Link(2, 0, HEAD_COLOR);
-	tail = new Link(3, 0, TAIL_COLOR);
-	// head = new Link((GRID_SIZE_X/4).toFixed(), (GRID_SIZE_Y/2).toFixed(), HEAD_COLOR);
-	// tail = new Link((GRID_SIZE_X/4).toFixed()-1, (GRID_SIZE_Y/2).toFixed(), TAIL_COLOR);
+	// head = new Link(2, 0, HEAD_COLOR);
+	// tail = new Link(3, 0, TAIL_COLOR);
+	head = new Link((GRID_SIZE_X/4).toFixed(), (GRID_SIZE_Y/2).toFixed(), HEAD_COLOR);
+	tail = new Link((GRID_SIZE_X/4).toFixed()-1, (GRID_SIZE_Y/2).toFixed(), TAIL_COLOR);
+
+	freeTiles.splice(head.y*GRID_SIZE_X + head.x, 1);
+	freeTiles.splice(tail.y*GRID_SIZE_X + tail.x, 1);
 
 	snakeBody = new Array(head, tail);
 	target = createNewTarget();
@@ -49,33 +52,36 @@ Snake.prototype = {
 	},
 	move 		: function(dir)
 	{
-		
+		debugger;
+		freeTiles.splice(tail.y*GRID_SIZE_X + tail.x, 0, tail); // return empty link to storage	// need fix
+
 		var earnNewBlock = false;
 		if(null == dir) dir = snakeMoveDirection;
 
 		var tempLink = new Link(head.x -(-dir.x), head.y -(-dir.y));
 
-		// if(	head.x < 0 || head.x == GRID_SIZE_X ||	 			// check out of bounds
-		// 	head.y < 0 || head.y == GRID_SIZE_Y)
-		// {
-		// 	canMove = false;	
-		// 	debugger;
-		// }
+		if(	head.x < 0 || head.x == GRID_SIZE_X ||	 						// check out of bounds
+			head.y < 0 || head.y == GRID_SIZE_Y)
+		{
+			canMove = false;	
+			debugger;
+		}
 			
 
 			
-		for (var i = 0; i < snakeBody.length; i++) {				
-			if(tempLink.y ==  freeTiles[i].y && tempLink.x == freeTiles[i].x)
+		for (var i = 0; i < snakeBody.length; i++) 							// collid with body Links 
+		{
+			if(tempLink.y ==  snakeBody[i].y && tempLink.x == snakeBody[i].x)
 			canMove = false;	
 		}		
-																// collid with body Links
+																
 		if(canMove)
 		if(tempLink.x == target.x && tempLink.y == target.y)	
 		{
 			snakeBody.splice(0, 0, new Link(target.x, target.y, target.color));
 			head = snakeBody[0];
 				delete target;
-			target = createNewTarget();									// eat new link
+			target = createNewTarget();										// eat new link
 			earnNewBlock = true;
 			debugger;
 		}
@@ -90,8 +96,6 @@ Snake.prototype = {
 			snakeBody[0].x = tempLink.x;
 			snakeBody[0].y = tempLink.y;
 		}
-
-		console.log(head.x +", "+ head.y);
 
 		delete tempLink;
 		drawGrid();
